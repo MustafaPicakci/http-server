@@ -7,6 +7,10 @@
     <groupId>org.example</groupId>
     <artifactId>http-server</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -19,10 +23,14 @@
             </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
+    </dependencies>
 
 </project>
