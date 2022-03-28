@@ -1,5 +1,6 @@
 package com.application;
 
+import com.application.model.HttpRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -29,6 +30,8 @@ public class HttpTask implements Runnable {
     }
 
     public void handle(Socket socket) throws IOException {
+        HttpRequest httpRequest = new HttpRequest();
+
         InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
         BufferedReader br = new BufferedReader(inputStreamReader);
 
@@ -36,9 +39,14 @@ public class HttpTask implements Runnable {
         StringBuilder header = new StringBuilder();
         String headerLine;
         while (StringUtils.isNotBlank(headerLine = br.readLine())) {
+            if(headerLine.split(":").length>1){
+            String key = headerLine.split(":")[0];
+            String value = headerLine.split(":")[1];
+            httpRequest.getHeader().put(key, value);}
             System.out.println(headerLine);
         }
         System.out.println(header);
+        System.out.println("--------------");
 
         //code to read the post payload data
         StringBuilder payload = new StringBuilder();
