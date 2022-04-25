@@ -1,6 +1,8 @@
 package com.application;
 
 import com.application.model.HttpRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -10,6 +12,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -33,6 +36,9 @@ public class HttpTask implements Runnable {
     }
 
     public void handle(Socket socket) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+
+
         HttpRequest httpRequest = new HttpRequest();
 
         InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
@@ -66,11 +72,8 @@ public class HttpTask implements Runnable {
         }
         if (body.length() > 0) {
             String[] fields= String.valueOf(body).split(",");
-          Map<Object,Object> mapBody=  Arrays.asList(fields)
-                    .stream()
-                    .collect(Collectors
-                            .toMap(field-> String.valueOf(field).split(":")[0],field->String.valueOf(field).split(":")[1]));
-                httpRequest.setBody(mapBody);
+           Map<Object,Object> mapBody= mapper.readValue(String.valueOf(body), HashMap.class);
+
         }
         System.out.println(httpRequest);
         System.out.println(body);
