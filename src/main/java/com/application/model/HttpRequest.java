@@ -4,31 +4,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
-    private HttpMethod method;
-    private String contentType;
+
     private Map<Object,Object> header=new HashMap<>();
 
-    public HttpMethod getMethod() {
-        return method;
+    public Map<Object, Object> getBody() {
+        return body;
     }
 
-    public void setMethod(HttpMethod method) {
-        this.method = method;
+    public void setBody(Map<Object, Object> body) {
+        this.body = body;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
+    private Map<Object,Object> body =new HashMap<>();
 
     public Map<Object, Object> getHeader() {
         return header;
     }
 
     public void setHeader(Map<Object, Object> header) {
-        this.header = header;
+        this.body = header;
     }
 }

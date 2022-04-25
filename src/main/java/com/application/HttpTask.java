@@ -9,6 +9,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HttpTask implements Runnable {
     private final Socket client;
@@ -39,17 +42,16 @@ public class HttpTask implements Runnable {
         StringBuilder header = new StringBuilder();
         String headerLine;
         while (StringUtils.isNotBlank(headerLine = br.readLine())) {
-            if(headerLine.split(":").length>1){
-            String key = headerLine.split(":")[0];
-            String value = headerLine.split(":")[1];
-            httpRequest.getHeader().put(key, value);}
-            System.out.println(headerLine);
+            if (headerLine.split(":").length > 1) {
+                String key = headerLine.split(":")[0];
+                String value = headerLine.split(":")[1];
+                httpRequest.getHeader().put(key, value);
+            }
         }
-        System.out.println(header);
-        System.out.println("--------------");
+        System.out.println(httpRequest);
 
         //code to read the post payload data
-        StringBuilder payload = new StringBuilder();
+        StringBuilder body = new StringBuilder();
         while (br.ready()) {
             char c = ((char) br.read());
             if (c == CR) {
@@ -58,17 +60,26 @@ public class HttpTask implements Runnable {
                 }
             } else {
                 if (StringUtils.isNotBlank(String.valueOf(c))) {
-                    payload.append(c);
+                    body.append(c);
                 }
             }
         }
-        System.out.println(payload);
+        if (body.length() > 0) {
+            String[] fields= String.valueOf(body).split(",");
+          Map<Object,Object> mapBody=  Arrays.asList(fields)
+                    .stream()
+                    .collect(Collectors
+                            .toMap(field-> String.valueOf(field).split(":")[0],field->String.valueOf(field).split(":")[1]));
+                httpRequest.setBody(mapBody);
+        }
+        System.out.println(httpRequest);
+        System.out.println(body);
 
         OutputStream clientOutput = socket.getOutputStream();
-        clientOutput.write(("HTTP/1.1 \r\n" + 500).getBytes());
-        clientOutput.write(("ContentType: " + "contentType" + "\r\n").getBytes());
+        clientOutput.write("HTTP/1.1 200 OK\r\n".getBytes());
+        clientOutput.write(("ContentType: text/html\r\n").getBytes());
         clientOutput.write("\r\n".getBytes());
-        clientOutput.write(("It Works").getBytes());
+        clientOutput.write("<b>It works!</b>".getBytes());
         clientOutput.write("\r\n\r\n".getBytes());
         clientOutput.flush();
         socket.close();

@@ -9,6 +9,7 @@ public class HttpServer {
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
 
     public void start(int port) {
+
         try (ServerSocket socket = new ServerSocket(port)) {
             while (true) {
                 try {
